@@ -10,3 +10,28 @@ pour mettre une commande il faut l'écrire dans le cardre en bas de la fenetre p
 
 ## prérequit
 python 3
+request
+
+# commands
+- help
+- installPython
+- installPythonWeb
+- currentTime
+- launchTime
+- version
+- python (execute en python une ligne de code)
+- openurl [url] (ouvre un lien)
+- exit
+- print
+- installCode (installe Visual Studio Code)
+- installCodeWeb (ouvre le lien de téléchargement)
+- installSublimeText (installe sublime text)
+- installSublimeTextWeb
+- genPassword4 (créer une suite de 4 nombre aléatoire)
+- genPassword8
+- genPassword12
+- installNotepad (install notepad)
+- installNotepadWeb
+- creator (donne des information sur le créateur)
+- clear (suprime les précedante commende)
+- calc [calcul] (fait les calcul préciser)
