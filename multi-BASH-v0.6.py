@@ -5,6 +5,8 @@ import cmd
 import urllib.request
 import random
 import os
+import subprocess
+import sys
 
 # variable au lancement
 launch_time = time.asctime()
@@ -13,9 +15,9 @@ launch_time = time.asctime()
 class Shell(cmd.Cmd):
     prompt = ""  # Pas de prompt car géré par l'interface Tkinter
     
-    def do_help(self, arg):
+    def do_help(self, arg, ):
         #Affiche la liste des commandes disponibles
-        return('''Commandes disponibles: openurl [url], version, exit, clear, currentTime, launchTime, calc (calcul), helpPython, helpVsCode, helpNotepad, helpPassword, helpSublimeText, creator''')
+        return('''Commandes disponibles: openurl [url], version, exit, clear, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
 
     def do_installPython(self, arg):
         url = "https://www.python.org/ftp/python/3.13.0/python-3.13.0-amd64.exe"
@@ -43,7 +45,8 @@ class Shell(cmd.Cmd):
         #Affiche la version de l'application
         return("Version actuelle: v0.5~py3.13\nlaunch time: {launch_time}")
 
-    def do_bonjour(self, arg):
+    def do_bonjour(self, arg, line):
+        command_history.append(line)
         #Affiche un message de bienvenue
         return("Hello, world!")
 
@@ -63,9 +66,18 @@ class Shell(cmd.Cmd):
         except Exception as e:
             return("Erreur lors de l'ouverture du lien : {e}")
 
+    def do_openGitHub(self ,line, profil="", repos=""):
+        command_history.append(line)
+        url = f"https://github.com/{profil}/{repos}"
+        try:
+            webbrowser.open(url)
+            return("ouverture du lien")
+        except Exception as e:
+            return("erreur lors de l'ouveture du lien")
+
     def do_exit(self, arg):
         #Ferme l'application
-        root.quit()
+        root.destroy()
 
     def do_helpPython(self, arg):
         return '''commande impliquand python:
@@ -121,22 +133,14 @@ installSublimeTextWeb'''
         webbrowser.open("https://www.sublimetext.com/download_thanks?target=win-x64")
         return 'lien ouvert'
 
-    def do_helpPassword(self, arg):
-        return '''commande de mot de passe
-genPassword4
-genpassword8
-genPassword12'''
-    def do_genPassword(self, arg):
-        return '''helpPassword pour plus d'info'''
-    def do_genPassword4(self, arg):
-        mdp = random.randint(1000, 9999)
-        return f"{mdp}"
-    def do_genPassword8(self, arg):
-        mdp = random.randint(10000000, 99999999)
-        return f"{mdp}"
-    def do_genPassword12(self, arg):
-        mdp = random.randint(100000000000, 999999999999)
-        return f"{mdp}"
+    def do_genPassword(self, arg,):
+        result = subprocess.run(['node', 'generate_password.js'], capture_output=True, text=True)
+        
+        # Récupère le mot de passe généré depuis la sortie
+        if result.returncode == 0:
+            return(f"Mot de passe généré : {result.stdout.strip()}")
+        else:
+            return(f"Erreur lors de l'exécution du script : {result.stderr}")
 
     def do_helpNotepad(self):
         return '''installNotepad
@@ -172,8 +176,25 @@ bio: un petit programmeur qui debute(depuis des années)'''
         text_zone.delete(1.0, tk.END)  # Efface le texte de la zone d'affichage
         return "Console nettoyée"
 
-    def default(self, line):
-        #Commande par défaut pour les entrées non reconnues 
+    def do_pipInstall(self, arg):
+        """Installe le package spécifié via pip."""
+        try:
+            # Exécute la commande pip install pour le package spécifié avec le même exécutable Python
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", arg],
+                capture_output=True,
+                text=True
+            )
+            # Vérifie si l'installation a réussi
+            if result.returncode == 0:
+                return f"Le package '{arg}' a été installé avec succès."
+            else:
+                return f"Erreur lors de l'installation de '{arg}': {result.stderr}"
+        except Exception as e:
+            return f"Une erreur s'est produite : {e}"
+
+    def default(self):
+        #Commande par défaut pour les entrées non reconnues
         return("Commande inconnue ou syntaxe incorrecte.")
 
 
@@ -214,6 +235,7 @@ def handle_enter(event=None):
     except Exception as e:
         text_zone.insert("end", f"Erreur : {e}\n")
     text_zone.see("end")
+    
 
 # Associer l'événement "Entrée" à la fonction handle_enter pour la zone d'entrée
 entry.bind("<Return>", handle_enter)
