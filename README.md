@@ -27,11 +27,10 @@ request
 - installCodeWeb (ouvre le lien de téléchargement)
 - installSublimeText (installe sublime text)
 - installSublimeTextWeb
-- genPassword4 (créer une suite de 4 nombre aléatoire)
-- genPassword8
-- genPassword12
+- genPassword
 - installNotepad (install notepad)
 - installNotepadWeb
 - creator (donne des information sur le créateur)
 - clear (suprime les précedante commende)
 - calc [calcul] (fait les calcul préciser)
+- pipInstall [package]
