@@ -9,8 +9,7 @@ multi-BASH sert a facilités certaine tache comme pa exemple installé certain l
 pour mettre une commande il faut l'écrire dans le cardre en bas de la fenetre puis appuyer sur entrée
 
 ## prérequit
-python 3
-request
+node.js
 
 # commands
 - help
