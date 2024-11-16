@@ -7,6 +7,7 @@ import random
 import os
 import subprocess
 import sys
+import shutil
 
 # variable au lancement
 launch_time = time.asctime()
@@ -17,7 +18,7 @@ class Shell(cmd.Cmd):
     
     def do_help(self, arg, ):
         #Affiche la liste des commandes disponibles
-        return('''Commandes disponibles: openurl [url], version, exit, clear, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
+        return('''Commandes disponibles: openurl [url], version, exit, clear, checkDiskSpace, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
 
     def do_installPython(self, arg):
         url = "https://www.python.org/ftp/python/3.13.0/python-3.13.0-amd64.exe"
@@ -158,7 +159,7 @@ installNotepadWeb'''
         webbrowser.open("https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.1/npp.8.7.1.Installer.x64.exe")
         return "lien ouvert"
 
-    def do_creator(self):
+    def do_creator(self, arg):
         return '''name: Xamo-maker
 github: https://github.com/Xamo-maker
 languages: Français
@@ -190,6 +191,29 @@ bio: un petit programmeur qui debute(depuis des années)'''
                 return f"Le package '{arg}' a été installé avec succès."
             else:
                 return f"Erreur lors de l'installation de '{arg}': {result.stderr}"
+        except Exception as e:
+            return f"Une erreur s'est produite : {e}"
+
+    def do_checkDiskSpace(self, arg):
+        """Vérifie l'espace disque disponible."""
+        try:
+            # Vérifie l'espace disque sur le chemin actuel ou spécifié
+            path = arg if arg else "."
+            usage = shutil.disk_usage(path)
+            
+            # Formatage des données
+            total = usage.total / (1024 ** 3)  # Convertir en Go
+            used = usage.used / (1024 ** 3)
+            free = usage.free / (1024 ** 3)
+            
+            return (
+                f"Informations sur le disque pour le chemin '{path}':\n"
+                f"  - Total : {total:.2f} Go\n"
+                f"  - Utilisé : {used:.2f} Go\n"
+                f"  - Libre : {free:.2f} Go"
+            )
+        except FileNotFoundError:
+            return f"Chemin '{arg}' introuvable."
         except Exception as e:
             return f"Une erreur s'est produite : {e}"
 
