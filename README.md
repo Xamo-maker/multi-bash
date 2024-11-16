@@ -33,3 +33,4 @@ node.js
 - clear (suprime les précedante commende)
 - calc [calcul] (fait les calcul préciser)
 - pipInstall [package]
+- checkDiskSpace
