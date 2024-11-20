@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 import shutil
+import platform
 
 # variable au lancement
 launch_time = time.asctime()
@@ -18,7 +19,7 @@ class Shell(cmd.Cmd):
     
     def do_help(self, arg, ):
         #Affiche la liste des commandes disponibles
-        return('''Commandes disponibles: openurl [url], version, exit, clear, checkDiskSpace, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
+        return('''Commandes disponibles: openurl [url], version, exit, clear, checkDiskSpace ,detailPC, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
 
     def do_installPython(self, arg):
         url = "https://www.python.org/ftp/python/3.13.0/python-3.13.0-amd64.exe"
@@ -216,6 +217,36 @@ bio: un petit programmeur qui debute(depuis des années)'''
             return f"Chemin '{arg}' introuvable."
         except Exception as e:
             return f"Une erreur s'est produite : {e}"
+
+    def do_detailPC(self, arg):
+        """
+        Affiche les informations du système : CPU et RAM.
+        """
+        try:
+            # Informations sur le processeur
+            cpu = platform.processor()
+            if not cpu:  # Pour les systèmes où `platform.processor()` ne retourne rien
+                cpu = platform.uname().machine
+            
+            # Informations sur la RAM
+            if os.name == "posix":  # Pour Linux/macOS
+                with open('/proc/meminfo', 'r') as meminfo:
+                    lines = meminfo.readlines()
+                    mem_total = next((line for line in lines if "MemTotal" in line), None)
+                    if mem_total:
+                        mem_total = int(mem_total.split()[1]) // 1024  # Convertir en Mo
+            elif os.name == "nt":  # Pour Windows
+                import ctypes
+                kernel32 = ctypes.windll.kernel32
+                memory_status = ctypes.c_ulonglong()
+                kernel32.GetPhysicallyInstalledSystemMemory(ctypes.byref(memory_status))
+                mem_total = memory_status.value // 1024  # Convertir en Mo
+            else:
+                mem_total = "Inconnu"
+            
+            return f"Processeur : {cpu}\nRAM : {mem_total} Mo"
+        except Exception as e:
+            return f"Erreur lors de la récupération des informations système : {e}"
 
     def default(self):
         #Commande par défaut pour les entrées non reconnues
