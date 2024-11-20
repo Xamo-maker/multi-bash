@@ -1,9 +1,10 @@
 # multi-bash
-multi-BASH sert a facilités certaine tache comme pa exemple installé certain logiciel
+multi-BASH sert a facilités certaine tache comme par exemple installé certain logiciel
 
 ## apperçus des commande
 - installPython (permet d'installé python)
 - calc [calcul] (permet de faire des calcul)
+- checkDiskSpace (affiche la place disponible)
 
 ## Instruction
 pour mettre une commande il faut l'écrire dans le cardre en bas de la fenetre puis appuyer sur entrée
@@ -33,4 +34,5 @@ node.js
 - clear (suprime les précedante commende)
 - calc [calcul] (fait les calcul préciser)
 - pipInstall [package]
-- checkDiskSpace
+- checkDiskSpace (affiche la place disponible)
+- detailPC (affiche le processer et le nombre de RAM)
