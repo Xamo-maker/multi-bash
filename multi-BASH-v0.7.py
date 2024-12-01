@@ -9,6 +9,7 @@ import subprocess
 import sys
 import shutil
 import platform
+import psutil
 
 # variable au lancement
 launch_time = time.asctime()
@@ -19,7 +20,7 @@ class Shell(cmd.Cmd):
     
     def do_help(self, arg, ):
         #Affiche la liste des commandes disponibles
-        return('''Commandes disponibles: openurl [url], version, exit, clear, checkDiskSpace ,detailPC, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
+        return('''Commandes disponibles: checkCPU, monitorCPU, openurl [url], version, exit, clear, checkDiskSpace ,detailPC, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
 
     def do_installPython(self, arg):
         url = "https://www.python.org/ftp/python/3.13.0/python-3.13.0-amd64.exe"
@@ -247,6 +248,48 @@ bio: un petit programmeur qui debute(depuis des années)'''
             return f"Processeur : {cpu}\nRAM : {mem_total} Mo"
         except Exception as e:
             return f"Erreur lors de la récupération des informations système : {e}"
+
+    def do_monitorCPU(self, arg):
+        #Surveille l'utilisation du CPU en temps réel.
+        return "Surveillance de l'utilisation du CPU. Appuyez sur Ctrl+C pour quitter."
+        try:
+            while True:
+                cpu_usage = psutil.cpu_percent(interval=1)  # Calcule l'utilisation toutes les secondes
+                return f"Utilisation du CPU : {cpu_usage}%"
+        except KeyboardInterrupt:
+            return "\nSurveillance arrêtée."
+            return "Surveillance CPU terminée."
+
+    def do_checkCPU(self, arg):
+        """Affiche un aperçu de l'état actuel du CPU."""
+        try:
+            # Utilisation globale du CPU
+            cpu_usage = psutil.cpu_percent(interval=1)
+            
+            # Fréquence du CPU
+            cpu_freq = psutil.cpu_freq()
+            current_freq = cpu_freq.current if cpu_freq else "Inconnu"
+            min_freq = cpu_freq.min if cpu_freq else "Inconnu"
+            max_freq = cpu_freq.max if cpu_freq else "Inconnu"
+            
+            # Nombre de cœurs
+            logical_cores = psutil.cpu_count(logical=True)
+            physical_cores = psutil.cpu_count(logical=False)
+
+            # Résultat à afficher
+            return (
+                f"Utilisation globale du CPU : {cpu_usage}%\n"
+                f"Fréquence actuelle : {current_freq:.2f} MHz\n"
+                f"Fréquence minimale : {min_freq:.2f} MHz\n"
+                f"Fréquence maximale : {max_freq:.2f} MHz\n"
+                f"Cœurs logiques : {logical_cores}\n"
+                f"Cœurs physiques : {physical_cores}"
+            )
+        except Exception as e:
+            return f"Une erreur s'est produite lors de la vérification du CPU : {e}"
+
+    def default(self, line):
+        return "Commande inconnue ou syntaxe incorrecte."
 
     def default(self):
         #Commande par défaut pour les entrées non reconnues
