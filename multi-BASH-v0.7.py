@@ -288,9 +288,6 @@ bio: un petit programmeur qui debute(depuis des années)'''
         except Exception as e:
             return f"Une erreur s'est produite lors de la vérification du CPU : {e}"
 
-    def default(self, line):
-        return "Commande inconnue ou syntaxe incorrecte."
-
     def default(self):
         #Commande par défaut pour les entrées non reconnues
         return("Commande inconnue ou syntaxe incorrecte.")
