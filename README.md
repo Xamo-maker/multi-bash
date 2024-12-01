@@ -11,6 +11,7 @@ pour mettre une commande il faut l'écrire dans le cardre en bas de la fenetre p
 
 ## prérequit
 node.js
+package psutil
 
 # commands
 - help
@@ -36,3 +37,4 @@ node.js
 - pipInstall [package]
 - checkDiskSpace (affiche la place disponible)
 - detailPC (affiche le processer et le nombre de RAM)
+- monitorCPU
