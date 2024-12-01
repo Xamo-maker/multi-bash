@@ -38,3 +38,4 @@ package psutil
 - checkDiskSpace (affiche la place disponible)
 - detailPC (affiche le processer et le nombre de RAM)
 - monitorCPU
+- checkCPU
