@@ -1,5 +1,1 @@
-monitorcpu/
-monitorMemory/
-updateAllPackages/
-checkCPU/
-uptime/
+
