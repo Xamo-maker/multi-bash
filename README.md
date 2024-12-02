@@ -39,3 +39,11 @@ package psutil
 - detailPC (affiche le processer et le nombre de RAM)
 - monitorCPU
 - checkCPU
+- rollDice
+- creatorGitHub
+- 
+
+### a rajouter
+- systemInfo
+- speedTest
+- uptime
