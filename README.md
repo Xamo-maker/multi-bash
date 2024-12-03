@@ -44,6 +44,4 @@ package psutil
 - 
 
 ### a rajouter
-- systemInfo
-- speedTest
 - uptime
