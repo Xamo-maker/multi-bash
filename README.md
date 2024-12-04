@@ -41,7 +41,4 @@ package psutil
 - checkCPU
 - rollDice
 - creatorGitHub
-- 
-
-### a rajouter
 - uptime
