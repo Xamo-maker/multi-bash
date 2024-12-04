@@ -10,6 +10,7 @@ import sys
 import shutil
 import platform
 import psutil
+from datetime import datetime, timedelta
 
 # variable au lancement
 launch_time = time.asctime()
@@ -20,7 +21,7 @@ class Shell(cmd.Cmd):
     
     def do_help(self, arg, ):
         #Affiche la liste des commandes disponibles
-        return('''Commandes disponibles: checkCPU, monitorCPU, openurl [url], version, exit, clear, checkDiskSpace ,detailPC, currentTime, launchTime, pipInstall [package], calc (calcul), openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator''')
+        return('''Commandes disponibles: checkCPU, monitorCPU, rollDice, openurl [url], exit, clear, checkDiskSpace, detailPC, currentTime, launchTime, pipInstall [package], calc (calcul), creatorGitHub, openGitHub [profil] [reposit], helpPython, helpVsCode, helpNotepad, genPassword, helpSublimeText, creator, uptime''')
 
     def do_installPython(self, arg):
         url = "https://www.python.org/ftp/python/3.13.0/python-3.13.0-amd64.exe"
@@ -44,10 +45,6 @@ class Shell(cmd.Cmd):
         #Affiche le temps de lancement de l'application
         return(launch_time)
 
-    def do_version(self, arg):
-        #Affiche la version de l'application
-        return("Version actuelle: v0.5~py3.13\nlaunch time: {launch_time}")
-
     def do_bonjour(self, arg, line):
         command_history.append(line)
         #Affiche un message de bienvenue
@@ -62,21 +59,27 @@ class Shell(cmd.Cmd):
             return("Erreur: {e}")
         
     def do_openurl(self, url):
-        #Ouvre un URL spécifié 
         try:
             webbrowser.open(url)
             return("Ouvrir le lien : {url}")
         except Exception as e:
             return("Erreur lors de l'ouverture du lien : {e}")
 
-    def do_openGitHub(self ,line, profil="", repos=""):
-        command_history.append(line)
-        url = f"https://github.com/{profil}/{repos}"
-        try:
-            webbrowser.open(url)
-            return("ouverture du lien")
-        except Exception as e:
-            return("erreur lors de l'ouveture du lien")
+    def do_openGitHub(self ,line, profil, repos):
+        if profil == "" and repos == "":
+            return("mettre openGitHub [profil] [roposit]\n"
+                   "openGitHub bash\n"
+                   "bashGitHub\n")
+        elif profil == "bash" and repos == "":
+            webbrowser.open("https://github.com/Xamo-maker/multi-bash")
+            return "ouverture du github..."
+        else:
+            url = f"https://github.com/{profil}/{repos}"
+            try:
+                webbrowser.open(url)
+                return("ouverture du lien")
+            except Exception as e:
+                return("erreur lors de l'ouveture du lien")
 
     def do_exit(self, arg):
         #Ferme l'application
@@ -288,6 +291,83 @@ bio: un petit programmeur qui debute(depuis des années)'''
         except Exception as e:
             return f"Une erreur s'est produite lors de la vérification du CPU : {e}"
 
+    def do_bashGitHub(self, arg):
+        webbrowser.open("https://github.com/Xamo-maker/multi-bash")
+        return "ouverture du GitHub..."
+
+    def do_creatorGitHub(self, arg):
+        webbrowser.open("https://github.com/Xamo-maker")
+        return "ouverture du GitHub du createur Xamo-Maker..."
+
+    def do_rollDice(self, arg):
+        roll = random.randint(1, 6)
+        return f"{roll}"
+
+    def do_systemInfo(self, arg):
+        """Affiche les informations sur le système."""
+        try:
+            # Informations sur le système d'exploitation
+            os_name = platform.system()
+            os_version = platform.version()
+            os_release = platform.release()
+            architecture = platform.architecture()[0]
+
+            # Informations sur le processeur
+            cpu = platform.processor()
+            cores_physical = psutil.cpu_count(logical=False)
+            cores_logical = psutil.cpu_count(logical=True)
+
+            # Informations sur la mémoire
+            memory = psutil.virtual_memory()
+            total_memory = memory.total / (1024 ** 3)  # Convertir en Go
+
+            # Construire la sortie
+            result = (
+                f"=== Informations Système ===\n"
+                f"Système d'exploitation : {os_name} {os_release}\n"
+                f"Version : {os_version}\n"
+                f"Architecture : {architecture}\n"
+                f"\n"
+                f"=== Informations CPU ===\n"
+                f"Processeur : {cpu}\n"
+                f"Cœurs physiques : {cores_physical}\n"
+                f"Cœurs logiques : {cores_logical}\n"
+                f"\n"
+                f"=== Informations Mémoire ===\n"
+                f"Mémoire totale : {total_memory:.2f} Go\n"
+            )
+            return result
+        except Exception as e:
+            return f"Une erreur s'est produite lors de la récupération des informations système : {e}"
+
+    def do_uptime(self, arg):
+        """Affiche depuis combien de temps le système est en fonctionnement."""
+        try:
+            # Temps de démarrage du système
+            boot_time_timestamp = psutil.boot_time()
+            boot_time = datetime.fromtimestamp(boot_time_timestamp)
+
+            # Temps actuel
+            now = datetime.now()
+
+            # Calcul de la durée écoulée
+            uptime_duration = now - boot_time
+
+            # Formatage de la durée
+            days = uptime_duration.days
+            hours, remainder = divmod(uptime_duration.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+
+            # Construire la sortie
+            result = (
+                f"=== Uptime Système ===\n"
+                f"Le système a démarré le : {boot_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+                f"Durée de fonctionnement : {days} jours, {hours} heures, {minutes} minutes, {seconds} secondes\n"
+            )
+            return result
+        except Exception as e:
+            return f"Une erreur s'est produite lors du calcul du uptime : {e}"
+
     def default(self):
         #Commande par défaut pour les entrées non reconnues
         return("Commande inconnue ou syntaxe incorrecte.")
@@ -295,7 +375,7 @@ bio: un petit programmeur qui debute(depuis des années)'''
 
 # Interface graphique
 root = tk.Tk()
-root.title("multi-bash v0.5")
+root.title("multi-bash v0.9")
 
 # Créer un cadre pour contenir la zone de texte et la scrollbar
 frame = tk.Frame(root)
@@ -326,7 +406,7 @@ def handle_enter(event=None):
     try:
         response = shell.onecmd(user_input)
         if response:
-            text_zone.insert("end", f"> {user_input}\n{response}\n")
+            text_zone.insert("end", f">>> {user_input}\n{response}\n")
     except Exception as e:
         text_zone.insert("end", f"Erreur : {e}\n")
     text_zone.see("end")
