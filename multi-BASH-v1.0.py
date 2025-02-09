@@ -419,7 +419,7 @@ root.configure(bg="#333333")
 text_zone.configure(font=("Courier", 12), bg="black", fg="lightgreen", padx=10, pady=10)
 entry.configure(font=("Courier", 12), bg="#222222", fg="white")
 
-return("logiciel sont license MIT, site internet: xomo.neocities.org")
+return("logiciel sous license MIT, github:https://github.com/Xamo-maker/multi-bash")
 
 # Lancer la boucle principale
 root.mainloop()
